@@ -87,6 +87,13 @@
                       >
                         メールアドレスを入力してください
                       </label>
+                      <label
+                        th:if="${errorMessageSameEmail!=null}"
+                        th:text="${errorMessageSameEmail}"
+                        class="error-messages"
+                      >
+                        メールアドレスを入力してください
+                      </label>
                       <input
                         type="text"
                         name="mailAddress"
