@@ -1,5 +1,6 @@
 package com.example.service;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,5 +40,16 @@ public class AdministratorService {
 	public Administrator login(String mailAddress, String password) {
 		Administrator administrator = administratorRepository.findByMailAddressAndPassward(mailAddress, password);
 		return administrator;
+	}
+
+	/**
+	 * 引数で渡したメールアドレスと一致する管理者情報を取得
+	 * 
+	 * @param mailAddress
+	 * @return 管理者情報 存在しない場合はnullが返ります
+	 */
+	public Optional<Administrator> findByMailAddress(String mailAddress){
+		Administrator administrator = administratorRepository.findByMailAddress(mailAddress);
+		return Optional.ofNullable(administrator);
 	}
 }

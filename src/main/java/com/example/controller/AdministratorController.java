@@ -3,6 +3,7 @@ package com.example.controller;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,8 +75,14 @@ public class AdministratorController {
 	 * @return ログイン画面へリダイレクト
 	 */
 	@PostMapping("/insert")
-	public String insert(@Validated InsertAdministratorForm form,
+	public String insert(Model model,
+						@Validated InsertAdministratorForm form,
 						BindingResult result) {
+		Administrator sameEmailAdministrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
+		if (sameEmailAdministrator!=null) {
+			model.addAttribute("errorMessageSameEmail", "そのメールアドレスは既に利用されております");
+			return toInsert(form);
+		}
 		if (result.hasErrors()) {
 			return toInsert(form);
 		}
