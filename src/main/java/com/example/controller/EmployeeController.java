@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Employee;
 import com.example.exception.EmployeeNotFoundException;
+import com.example.form.SearchEmployeeForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
 
@@ -55,9 +56,10 @@ public class EmployeeController {
 	 * @param model モデル
 	 * @return 従業員一覧画面
 	 */
-	@GetMapping("/showList")
-	public String showList(Model model) {
-		List<Employee> employeeList = employeeService.showList();
+	@GetMapping({"","/"})
+	public String showList(Model model
+							,SearchEmployeeForm form) {
+		List<Employee> employeeList = employeeService.showList(form);
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
@@ -107,6 +109,6 @@ public class EmployeeController {
 		Employee employee = new Employee();
 		employee.setId(Integer.parseInt(id));
 		employeeService.update(employee);
-		return "redirect:/employees/showList";
+		return "redirect:/employees";
 	}
 }

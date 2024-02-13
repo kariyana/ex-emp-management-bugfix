@@ -138,7 +138,7 @@ public class AdministratorController {
 		}
 		//ログインしているユーザーの情報をsessionに渡す
 		session.setAttribute("administratorName", administrator.getName());
-		return "redirect:/employees/showList";
+		return "redirect:/employees";
 	}
 
 	/////////////////////////////////////////////////////

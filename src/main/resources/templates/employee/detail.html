@@ -44,7 +44,7 @@
             <a
               class="navbar-brand"
               href="list.html"
-              th:href="@{/employees/showList}"
+              th:href="@{/employees}"
             >
               <!-- 企業ロゴ -->
               <img
@@ -61,7 +61,7 @@
           >
             <ul class="nav navbar-nav">
               <li class="active">
-                <a href="list.html" th:href="@{/employees/showList}"
+                <a href="list.html" th:href="@{/employees}"
                   >従業員管理</a
                 >
               </li>
@@ -84,7 +84,7 @@
 
       <!-- パンくずリスト -->
       <ol class="breadcrumb">
-        <li><a th:href="@{/employees/showList}" th:text="従業員リスト"></a></li>
+        <li><a th:href="@{/employees}" th:text="従業員リスト"></a></li>
         <li class="active">従業員詳細</li>
       </ol>
 
