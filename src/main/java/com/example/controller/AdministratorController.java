@@ -138,7 +138,7 @@ public class AdministratorController {
 		}
 		//ログインしているユーザーの情報をsessionに渡す
 		session.setAttribute("administratorName", administrator.getName());
-		return "redirect:/employee/showList";
+		return "redirect:/employees/showList";
 	}
 
 	/////////////////////////////////////////////////////
@@ -149,7 +149,7 @@ public class AdministratorController {
 	 * 
 	 * @return ログイン画面
 	 */
-	@GetMapping(value = "/logout")
+	@GetMapping("/logout")
 	public String logout() {
 		session.invalidate();
 		return "redirect:/login";
