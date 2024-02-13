@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Employee;
+import com.example.form.SearchEmployeeForm;
 import com.example.repository.EmployeeRepository;
 
 /**
@@ -28,8 +29,8 @@ public class EmployeeService {
 	 * 
 	 * @return 従業員情報一覧
 	 */
-	public List<Employee> showList() {
-		List<Employee> employeeList = employeeRepository.findAll();
+	public List<Employee> showList(SearchEmployeeForm form) {
+		List<Employee> employeeList = employeeRepository.findAll(form);
 		return employeeList;
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Employee;
+import com.example.form.SearchEmployeeForm;
 
 /**
  * employeesテーブルを操作するリポジトリ.
@@ -49,29 +50,39 @@ public class EmployeeRepository {
 	 * 
 	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
 	 */
-	public List<Employee> findAll() {
-		String sql = """
-					SELECT 
-						id
-						,name
-						,image
-						,gender
-						,hire_date
-						,mail_address
-						,zip_code
-						,address
-						,telephone
-						,salary
-						,characteristics
-						,dependents_count 
-					FROM 
-					  employees
-					ORDER BY 
-					  hire_date desc
-					;
-				""";
-							
-		List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
+	public List<Employee> findAll(SearchEmployeeForm form) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ;");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
 
 		return developmentList;
 	}

@@ -44,7 +44,7 @@
             <a
               class="navbar-brand"
               href="list.html"
-              th:href="@{/employees/showList}"
+              th:href="@{/employees}"
             >
               <!-- 企業ロゴ -->
               <img
@@ -61,7 +61,7 @@
           >
             <ul class="nav navbar-nav">
               <li class="active">
-                <a href="list.html" th:href="@{/employees/showList}"
+                <a href="list.html" th:href="@{/employees}"
                   >従業員管理</a
                 >
               </li>
@@ -85,7 +85,7 @@
       <!-- パンくずリスト -->
       <ol class="breadcrumb">
         <li class="active">
-          <a href="list.html" th:href="@{/employees/showList}">従業員リスト</a>
+          <a href="list.html" th:href="@{/employees}">従業員リスト</a>
         </li>
       </ol>
 
@@ -95,7 +95,24 @@
           class="table-responsive col-lg-offset-2 col-lg-8 col-md-offset-2 col-md-8 col-sm-12 col-xs-12"
         >
           <!-- ここから上を編集する必要はありません -->
-
+        <div>
+          <h3>従業員検索</h3>
+          <div>
+            <label
+              th:if="${errorNotEmployee!=null}"
+              th:text="${errorNotEmployee}"
+              class="error-messages"
+            >
+              １件もありませんでした
+            </label>
+            <form th:action="@{/employees}" method="get" th:object="${searchEmployeeForm}">
+              <label for="name">名前:</label>
+              <input type="text" th:field="*{name}">
+              <br>
+              <button>検索する</button>
+            </form>
+          </div>
+        </div>
           <!-- ここにモックのtable要素を貼り付けます -->
 
           <table class="table table-striped">
