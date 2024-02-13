@@ -92,7 +92,7 @@
                         th:text="${errorMessageSameEmail}"
                         class="error-messages"
                       >
-                        メールアドレスを入力してください
+                        メールアドレスがすでに使われております
                       </label>
                       <input
                         type="text"
@@ -126,7 +126,31 @@
                         placeholder="password"
                         th:field="*{password}"
                         th:errorclass="error-input"
-                        value="xxxxxxxx"
+                        value="xxxxxxx"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!-- 確認用パスワード -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <label for="confirmPassword"> パスワード(確認用): </label>
+                      <label
+                        th:if="${errorMessageNotMatchPassword!=null}"
+                        th:text="${errorMessageNotMatchPassword}"
+                        class="error-messages"
+                      >
+                        メールアドレスが一致しません。
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        class="form-control"
+                        placeholder="password"
+                        th:field="*{confirmPassword}"
+                        th:errorclass="error-input"
+                        value="xxxxxxx"
                       />
                     </div>
                   </div>
