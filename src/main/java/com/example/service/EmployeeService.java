@@ -40,7 +40,7 @@ public class EmployeeService {
 	 * @throws org.springframework.dao.DataAccessException 検索されない場合は例外が発生します
 	 */
 	public Employee showDetail(Integer id) {
-		Employee employee = employeeRepository.load(id);
+		Employee employee = employeeRepository.findById(id);
 		return employee;
 	}
 
