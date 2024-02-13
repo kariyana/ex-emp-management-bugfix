@@ -1,7 +1,10 @@
 package com.example.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,7 @@ import com.example.form.LoginForm;
 import com.example.service.AdministratorService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 管理者情報を操作するコントローラー.
@@ -26,6 +30,7 @@ import jakarta.servlet.http.HttpSession;
  *
  */
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/")
 public class AdministratorController {
 
@@ -34,6 +39,8 @@ public class AdministratorController {
 
 	@Autowired
 	private HttpSession session;
+
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -100,7 +107,7 @@ public class AdministratorController {
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
 		administratorService.insert(administrator);
-		return "redirect:/";
+		return "redirect:/login";
 	}
 
 	/////////////////////////////////////////////////////
@@ -111,7 +118,7 @@ public class AdministratorController {
 	 * 
 	 * @return ログイン画面
 	 */
-	@GetMapping("/")
+	@GetMapping("/login")
 	public String toLogin() {
 		return "administrator/login";
 	}
@@ -124,10 +131,10 @@ public class AdministratorController {
 	 */
 	@PostMapping("/login")
 	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
-		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
-		if (administrator == null) {
+		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
+		if (!passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return "redirect:/";
+			return "redirect:/login";
 		}
 		//ログインしているユーザーの情報をsessionに渡す
 		session.setAttribute("administratorName", administrator.getName());
@@ -145,7 +152,7 @@ public class AdministratorController {
 	@GetMapping(value = "/logout")
 	public String logout() {
 		session.invalidate();
-		return "redirect:/";
+		return "redirect:/login";
 	}
 
 }
