@@ -60,6 +60,11 @@ public class EmployeeController {
 	public String showList(Model model
 							,SearchEmployeeForm form) {
 		List<Employee> employeeList = employeeService.showList(form);
+		if (employeeList.isEmpty()) {
+			form.setName("");
+			employeeList = employeeService.showList(form);
+			model.addAttribute("errorNotEmployee", "１件もありませんでした");
+		}
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
@@ -87,7 +92,6 @@ public class EmployeeController {
         String date = dateFormat.format(employee.getHireDate());
         form.setDependentsCount(employee.getDependentsCount().toString());
         form.setHireDate(date);
-        System.out.println(date);
         return "employee/detail";
     }
 

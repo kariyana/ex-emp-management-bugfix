@@ -98,6 +98,13 @@
         <div>
           <h3>従業員検索</h3>
           <div>
+            <label
+              th:if="${errorNotEmployee!=null}"
+              th:text="${errorNotEmployee}"
+              class="error-messages"
+            >
+              １件もありませんでした
+            </label>
             <form th:action="@{/employees}" method="get" th:object="${searchEmployeeForm}">
               <label for="name">名前:</label>
               <input type="text" th:field="*{name}">

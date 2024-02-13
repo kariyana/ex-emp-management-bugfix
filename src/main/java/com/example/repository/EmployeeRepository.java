@@ -51,26 +51,7 @@ public class EmployeeRepository {
 	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
 	 */
 	public List<Employee> findAll(SearchEmployeeForm form) {
-		String sql = """
-					SELECT 
-						id
-						,name
-						,image
-						,gender
-						,hire_date
-						,mail_address
-						,zip_code
-						,address
-						,telephone
-						,salary
-						,characteristics
-						,dependents_count 
-					FROM 
-					  employees
-					ORDER BY 
-					  hire_date desc
-					;
-				""";
+
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append(" SELECT ");
 		sqlBuilder.append(" e.id ");
