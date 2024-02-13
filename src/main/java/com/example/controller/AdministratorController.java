@@ -78,12 +78,22 @@ public class AdministratorController {
 	public String insert(Model model,
 						@Validated InsertAdministratorForm form,
 						BindingResult result) {
+		//バリデーション以外のエラーがあるかどうか
+		boolean isError = false;
+		//メールアドレスの重複を確認する。
 		Administrator sameEmailAdministrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
 		if (sameEmailAdministrator!=null) {
 			model.addAttribute("errorMessageSameEmail", "そのメールアドレスは既に利用されております");
-			return toInsert(form);
+			isError = true;
 		}
-		if (result.hasErrors()) {
+		//メールアドレスと確認用メールアドレスが一致しているかどうか
+		if (!form.getPassword().equals(form.getConfirmPassword())) {
+			model.addAttribute("errorMessageNotMatchPassword", "パスワードと確認用パスワードが一致しません");
+			isError = true;
+		}
+
+		//バリデーションエラーを確認する。
+		if (result.hasErrors() || isError) {
 			return toInsert(form);
 		}
 		Administrator administrator = new Administrator();
