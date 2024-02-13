@@ -1,6 +1,7 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,9 +40,9 @@ public class EmployeeService {
 	 * @return 従業員情報
 	 * @throws org.springframework.dao.DataAccessException 検索されない場合は例外が発生します
 	 */
-	public Employee showDetail(Integer id) {
+	public Optional<Employee> showDetail(Integer id) {
 		Employee employee = employeeRepository.findById(id);
-		return employee;
+		return Optional.ofNullable(employee);
 	}
 
 	/**
