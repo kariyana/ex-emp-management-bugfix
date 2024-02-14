@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.example.domain.Employee;
 import com.example.form.SearchEmployeeForm;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * employeesテーブルを操作するリポジトリ.
  * 
@@ -20,6 +22,7 @@ import com.example.form.SearchEmployeeForm;
  * 
  */
 @Repository
+@RequiredArgsConstructor
 public class EmployeeRepository {
 
 	/**
@@ -42,8 +45,7 @@ public class EmployeeRepository {
 		return employee;
 	};
 
-	@Autowired
-	private NamedParameterJdbcTemplate template;
+	private final NamedParameterJdbcTemplate template;
 
 	/**
 	 * 従業員一覧情報を入社日順で取得します.
@@ -112,5 +114,35 @@ public class EmployeeRepository {
 
 		String updateSql = "UPDATE employees SET dependents_count=:dependentsCount WHERE id=:id";
 		template.update(updateSql, param);
+	}
+
+	/**
+	 * 従業員を新規追加
+	 * @param Employee
+	 */
+	public void insert(Employee employee){
+		String insertSql = """
+				INSERT INTO 
+				  employees
+				  (id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count)
+				VALUES
+				  (:id,:name,:image,:gender,:hireDate,:mailAddress,:zipCode,:address,:telephone,:salary,:characteristics,:dependentsCount)
+				""";
+		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
+		template.update(insertSql, param);
+	}
+
+	/**
+	 * 従業員のIDの最大値を取得
+	 */
+	public int getMaxId(){
+		String getMaxIdSql = """
+				SELECT
+				  max(id)
+				FROM 
+				  employees
+				""";
+		SqlParameterSource param = new MapSqlParameterSource();
+		return template.queryForObject(getMaxIdSql, param,Integer.class);
 	}
 }

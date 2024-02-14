@@ -11,6 +11,9 @@ import com.example.domain.Employee;
 import com.example.form.SearchEmployeeForm;
 import com.example.repository.EmployeeRepository;
 
+import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
+
 /**
  * 従業員情報を操作するサービス.
  * 
@@ -18,11 +21,11 @@ import com.example.repository.EmployeeRepository;
  *
  */
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class EmployeeService {
 
-	@Autowired
-	private EmployeeRepository employeeRepository;
+	private final EmployeeRepository employeeRepository;
 
 	/**
 	 * 従業員情報を全件取得します.
@@ -53,5 +56,18 @@ public class EmployeeService {
 	 */
 	public void update(Employee employee) {
 		employeeRepository.update(employee);
+	}
+
+	/**
+	 * 従業員を新規追加する
+	 * @param employee 追加した従業員情報
+	 */
+	@Synchronized
+	public void insert(Employee employee){
+		//新規追加するIDを取得する
+		int employeeId = employeeRepository.getMaxId()+1;
+		employee.setId(employeeId);
+
+		employeeRepository.insert(employee);
 	}
 }
