@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,9 +36,12 @@ import com.example.form.InsertEmployeeForm;
 import com.example.form.SearchEmployeeForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+import com.example.service.UploadImageService;
+
 import java.time.format.DateTimeFormatter;
 
 import jakarta.websocket.server.PathParam;
+import lombok.RequiredArgsConstructor;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
 
 /**
@@ -44,11 +51,12 @@ import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
  *
  */
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/employees")
 public class EmployeeController {
 
-	@Autowired
-	private EmployeeService employeeService;
+	private final EmployeeService employeeService;
+	private final UploadImageService uploadImageService;
 
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -153,16 +161,26 @@ public class EmployeeController {
 		if (result.hasErrors()) {
 			return showInsert(model,form);
 		}
-		Employee employee = new Employee();
-		BeanUtils.copyProperties(form, employee);
+		
+		
+		
 		// フォームに渡されたアップロードファイルを取得
 		MultipartFile multipartFile = form.getImage();
-		String fileName = multipartFile.getOriginalFilename();
-        Path filePath = Paths.get("D:/test1/" + fileName);
-		System.out.println("file"+multipartFile);
-		System.out.println("fileName"+fileName);
-		System.out.println("filePath"+filePath);
+		String fileName = "";
+		if (!multipartFile.isEmpty()) {
+			fileName = uploadImageService.getUploadImageName(multipartFile);
+		}
+		if (fileName.equals("")) {
+			model.addAttribute("errorUploadImage", "正しい画像ファイルを選択してください");
+			return showInsert(model,form);
+		}
+		
+		//従業員情報にセットする
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		employee.setImage(fileName);
 		employee.setDependentsCount(Integer.parseInt(form.getDependentsCount()));
+		employee.setSalary(Integer.parseInt(form.getSalary()));
 		//文字列型からtimestamp型へ変換
 		try{        
 			Timestamp hireDate = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(form.getHireDate()).getTime());
@@ -170,7 +188,7 @@ public class EmployeeController {
 		} catch (ParseException e){       
 				e.printStackTrace();
 		}
-		// employeeService.insert(employee);
+		employeeService.insert(employee);
 		System.out.println(employee);
 		System.out.println(form);
 		return "redirect:/employees/insert";

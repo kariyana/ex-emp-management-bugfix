@@ -12,6 +12,7 @@ import com.example.form.SearchEmployeeForm;
 import com.example.repository.EmployeeRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 
 /**
  * 従業員情報を操作するサービス.
@@ -61,6 +62,7 @@ public class EmployeeService {
 	 * 従業員を新規追加する
 	 * @param employee 追加した従業員情報
 	 */
+	@Synchronized
 	public void insert(Employee employee){
 		//新規追加するIDを取得する
 		int employeeId = employeeRepository.getMaxId()+1;
