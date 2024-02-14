@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchEmployeeForm {
+public class SearchEmployeeAutoCompleteForm {
     
     /*取得する件数 */
     private int limit;
     /*名前 */
     private String name;
-    
 }

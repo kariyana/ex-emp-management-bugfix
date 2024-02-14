@@ -36,6 +36,25 @@ public class EmployeeService {
 		List<Employee> employeeList = employeeRepository.findAll(form);
 		return employeeList;
 	}
+	/**
+	 * 従業員情報を全件取得します.(ページング機能)
+	 * @param limit
+	 * @param ofset
+	 * @return 従業員情報一覧
+	 */
+	public List<Employee> getEmployeeWithPaginate(SearchEmployeeForm form,int limit, int ofset) {
+		List<Employee> employeeList = employeeRepository.findAllWithpaginate(form,limit,ofset);
+		return employeeList;
+	}
+	/**
+	 * 従業員名のみ取得します.（オートコンプリート）
+	 * @param limit
+	 * @return 従業員名前一覧
+	 */
+	public List<Employee> findEmployeeNameByName(SearchEmployeeForm form,int limit, int ofset) {
+		List<Employee> employeeNames = employeeRepository.findEmployeeNameByName(form,limit);
+		return employeeNames;
+	}
 
 	/**
 	 * 従業員情報を取得します.

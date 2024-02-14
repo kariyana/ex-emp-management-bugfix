@@ -110,7 +110,11 @@
             </label>
             <form th:action="@{/employees}" method="get" th:object="${searchEmployeeForm}">
               <label for="name">名前:</label>
-              <input type="text" th:field="*{name}">
+              <input type="text" th:field="*{name}" id="searchName">
+              <label for="pickup">候補者</label>
+              <select name="pickup" id="pickup" >
+                <option value="---" id="defalutPickup" th:text="候補者なし" class="pickup"></option>
+              </select>
               <br>
               <button>検索する</button>
             </form>
@@ -151,8 +155,8 @@
       </div>
     </div>
     <!-- end container -->
-
+    <script th:src="@{/js/employeeList.js}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="../../static/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
   </body>
 </html>
