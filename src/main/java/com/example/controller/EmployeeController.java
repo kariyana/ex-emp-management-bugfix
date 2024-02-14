@@ -1,11 +1,20 @@
 package com.example.controller;
 
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,14 +24,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.domain.Employee;
 import com.example.exception.EmployeeNotFoundException;
+import com.example.form.InsertEmployeeForm;
 import com.example.form.SearchEmployeeForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.websocket.server.PathParam;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
 
 /**
  * 従業員情報を操作するコントローラー.
@@ -114,5 +127,52 @@ public class EmployeeController {
 		employee.setId(Integer.parseInt(id));
 		employeeService.update(employee);
 		return "redirect:/employees";
+	}
+	/**
+	 * 従業員を追加画面を表示します
+	 * 
+	 * @param form 従業員情報用フォーム
+	 * @return 画面を出力
+	 */
+	@GetMapping("/insert")
+	public String showInsert(Model model
+							,InsertEmployeeForm form) {
+		System.out.println("form"+form);
+		return "/employee/insert";
+	}
+	/**
+	 * 従業員を追加いたします。
+	 * 
+	 * @param form 従業員情報用フォーム
+	 * @return 従業員一覧画面へリダクレクト
+	 */
+	@PostMapping({"/",""})
+	public String insert(@Validated InsertEmployeeForm form
+						,BindingResult result
+						,Model model) {
+		if (result.hasErrors()) {
+			return showInsert(model,form);
+		}
+		Employee employee = new Employee();
+		BeanUtils.copyProperties(form, employee);
+		// フォームに渡されたアップロードファイルを取得
+		MultipartFile multipartFile = form.getImage();
+		String fileName = multipartFile.getOriginalFilename();
+        Path filePath = Paths.get("D:/test1/" + fileName);
+		System.out.println("file"+multipartFile);
+		System.out.println("fileName"+fileName);
+		System.out.println("filePath"+filePath);
+		employee.setDependentsCount(Integer.parseInt(form.getDependentsCount()));
+		//文字列型からtimestamp型へ変換
+		try{        
+			Timestamp hireDate = new Timestamp(new SimpleDateFormat("yyyy-MM-dd").parse(form.getHireDate()).getTime());
+			employee.setHireDate(hireDate);
+		} catch (ParseException e){       
+				e.printStackTrace();
+		}
+		// employeeService.insert(employee);
+		System.out.println(employee);
+		System.out.println(form);
+		return "redirect:/employees/insert";
 	}
 }
