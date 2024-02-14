@@ -88,6 +88,100 @@ public class EmployeeRepository {
 
 		return developmentList;
 	}
+	/**
+	 * 従業員一覧情報を入社日順で取得します.(ページング機能付き)
+	 * @param ofset
+	 * @param limit
+	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
+	 */
+	public List<Employee> findAllWithpaginate(SearchEmployeeForm form,int limit,int ofset) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ");
+		sqlBuilder.append(" LIMIT ");
+		sqlBuilder.append(limit);
+		sqlBuilder.append(" OFFSET ");
+		sqlBuilder.append(ofset);
+
+		sqlBuilder.append(";");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
+
+		return developmentList;
+	}
+	/**
+	 * 従業員一覧情報を入社日順で取得します.(ページング機能付き)
+	 * @param ofset
+	 * @param limit
+	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
+	 */
+	public List<Employee> findEmployeeNameByName(SearchEmployeeForm form,int limit) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ");
+		sqlBuilder.append(" LIMIT ");
+		sqlBuilder.append(limit);
+
+		sqlBuilder.append(";");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
+
+		return developmentList;
+	}
 
 	/**
 	 * 主キーから従業員情報を取得します.
