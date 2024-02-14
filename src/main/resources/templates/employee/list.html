@@ -151,6 +151,11 @@
           </table>
 
           <!-- ここから下を編集する必要はありません -->
+          <div>
+            <span th:each="page : ${paginate}">
+              <a th:href="@{?page=}+${page.value}" th:text="${page.key}"></a>
+            </span>
+          </div>
         </div>
       </div>
     </div>

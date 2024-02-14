@@ -43,7 +43,7 @@ public class EmployeeService {
 	 * @return 従業員情報一覧
 	 */
 	public List<Employee> getEmployeeWithPaginate(SearchEmployeeForm form,int limit, int ofset) {
-		List<Employee> employeeList = employeeRepository.findAllWithpaginate(form,limit,ofset);
+		List<Employee> employeeList = employeeRepository.findAllWithPaginate(form,limit,ofset);
 		return employeeList;
 	}
 	/**
@@ -89,4 +89,13 @@ public class EmployeeService {
 
 		employeeRepository.insert(employee);
 	}
+
+	   /**
+     * 従業員の総数を取得する
+     * @return numberOfEmployees int
+     * 
+     */
+    public int getNumberOfEmployees(){
+        return employeeRepository.getNumberOfEmployees();
+    }
 }

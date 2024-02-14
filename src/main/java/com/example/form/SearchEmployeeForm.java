@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchEmployeeForm {
-    
+    /*現在のページ */
+    private Integer page;
     /*取得する件数 */
-    private int limit;
+    private Integer limit;
     /*名前 */
     private String name;
     
