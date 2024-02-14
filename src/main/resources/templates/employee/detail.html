@@ -44,7 +44,7 @@
             <a
               class="navbar-brand"
               href="list.html"
-              th:href="@{/employee/showList}"
+              th:href="@{/employees}"
             >
               <!-- 企業ロゴ -->
               <img
@@ -61,7 +61,7 @@
           >
             <ul class="nav navbar-nav">
               <li class="active">
-                <a href="list.html" th:href="@{/employee/showList}"
+                <a href="list.html" th:href="@{/employees}"
                   >従業員管理</a
                 >
               </li>
@@ -84,7 +84,10 @@
 
       <!-- パンくずリスト -->
       <ol class="breadcrumb">
-        <li><a th:href="@{/employee/showList}" th:text="従業員リスト"></a></li>
+        <li><a th:href="@{/employees}" th:text="従業員リスト"></a></li>
+        <li>
+          <a href="list.html" th:href="@{/employees/insert}">従業員追加</a>
+        </li>
         <li class="active">従業員詳細</li>
       </ol>
 
@@ -102,7 +105,7 @@
             <form
               method="post"
               action="list.html"
-              th:action="@{/employee/update}"
+              th:action="@{/employees/update}+*{id}"
               th:object="${updateEmployeeForm}"
             >
               <fieldset>
@@ -193,11 +196,6 @@
                         style="color: red"
                         for="dependentsCount"
                       ></label>
-                      <input
-                        type="hidden"
-                        name="id"
-                        th:value="${employee.id}"
-                      />
                       <input
                         type="text"
                         name="dependentsCount"

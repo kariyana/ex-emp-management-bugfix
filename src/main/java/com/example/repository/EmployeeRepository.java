@@ -11,6 +11,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import com.example.domain.Employee;
+import com.example.form.SearchEmployeeForm;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * employeesテーブルを操作するリポジトリ.
@@ -19,6 +22,7 @@ import com.example.domain.Employee;
  * 
  */
 @Repository
+@RequiredArgsConstructor
 public class EmployeeRepository {
 
 	/**
@@ -41,37 +45,140 @@ public class EmployeeRepository {
 		return employee;
 	};
 
-	@Autowired
-	private NamedParameterJdbcTemplate template;
+	private final NamedParameterJdbcTemplate template;
 
 	/**
 	 * 従業員一覧情報を入社日順で取得します.
 	 * 
 	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
 	 */
-	public List<Employee> findAll() {
-		String sql = """
-					SELECT 
-						id
-						,name
-						,image
-						,gender
-						,hire_date
-						,mail_address
-						,zip_code
-						,address
-						,telephone
-						,salary
-						,characteristics
-						,dependents_count 
-					FROM 
-					  employees
-					ORDER BY 
-					  hire_date desc
-					;
-				""";
-							
-		List<Employee> developmentList = template.query(sql, EMPLOYEE_ROW_MAPPER);
+	public List<Employee> findAll(SearchEmployeeForm form) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ;");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
+
+		return developmentList;
+	}
+	/**
+	 * 従業員一覧情報を入社日順で取得します.(ページング機能付き)
+	 * @param ofset
+	 * @param limit
+	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
+	 */
+	public List<Employee> findAllWithPaginate(SearchEmployeeForm form,int limit,int ofset) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ");
+		sqlBuilder.append(" LIMIT ");
+		sqlBuilder.append(limit);
+		sqlBuilder.append(" OFFSET ");
+		sqlBuilder.append(ofset);
+
+		sqlBuilder.append(";");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
+
+		return developmentList;
+	}
+	/**
+	 * 従業員一覧情報を入社日順で取得します.(ページング機能付き)
+	 * @param ofset
+	 * @param limit
+	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
+	 */
+	public List<Employee> findEmployeeNameByName(SearchEmployeeForm form,int limit) {
+
+		StringBuilder sqlBuilder = new StringBuilder();
+		sqlBuilder.append(" SELECT ");
+		sqlBuilder.append(" e.id ");
+		sqlBuilder.append(" ,e.name ");
+		sqlBuilder.append(" ,e.image ");
+		sqlBuilder.append(" ,e.gender ");
+		sqlBuilder.append(" ,e.hire_date ");
+		sqlBuilder.append(" ,e.mail_address ");
+		sqlBuilder.append(" ,e.zip_code ");
+		sqlBuilder.append(" ,e.address ");
+		sqlBuilder.append(" ,e.telephone ");
+		sqlBuilder.append(" ,e.salary ");
+		sqlBuilder.append(" ,e.characteristics ");
+		sqlBuilder.append(" ,e.dependents_count  ");
+		sqlBuilder.append(" FROM ");
+		sqlBuilder.append(" employees e ");
+		sqlBuilder.append(" WHERE 1 = 1 ");
+
+		String nameKeyWord = form.getName();
+		if (nameKeyWord!=null && !nameKeyWord.equals("")) {
+			sqlBuilder.append(" AND ");
+			sqlBuilder.append(" e.name LIKE '%");
+			sqlBuilder.append(nameKeyWord);
+			sqlBuilder.append("%' ");
+		}
+
+		sqlBuilder.append(" ORDER BY ");
+		sqlBuilder.append(" e.hire_date desc ");
+		sqlBuilder.append(" LIMIT ");
+		sqlBuilder.append(limit);
+
+		sqlBuilder.append(";");
+		
+		String findAllSql = sqlBuilder.toString();
+		List<Employee> developmentList = template.query(findAllSql, EMPLOYEE_ROW_MAPPER);
 
 		return developmentList;
 	}
@@ -101,5 +208,48 @@ public class EmployeeRepository {
 
 		String updateSql = "UPDATE employees SET dependents_count=:dependentsCount WHERE id=:id";
 		template.update(updateSql, param);
+	}
+
+	/**
+	 * 従業員を新規追加
+	 * @param Employee
+	 */
+	public void insert(Employee employee){
+		String insertSql = """
+				INSERT INTO 
+				  employees
+				  (id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count)
+				VALUES
+				  (:id,:name,:image,:gender,:hireDate,:mailAddress,:zipCode,:address,:telephone,:salary,:characteristics,:dependentsCount)
+				""";
+		SqlParameterSource param = new BeanPropertySqlParameterSource(employee);
+		template.update(insertSql, param);
+	}
+
+	/**
+	 * 従業員のIDの最大値を取得
+	 */
+	public int getMaxId(){
+		String getMaxIdSql = """
+				SELECT
+				  max(id)
+				FROM 
+				  employees
+				""";
+		SqlParameterSource param = new MapSqlParameterSource();
+		return template.queryForObject(getMaxIdSql, param,Integer.class);
+	}
+	/**
+	 * 従業員の件数を取得する
+	 */
+	public int getNumberOfEmployees(){
+		String getMaxIdSql = """
+				SELECT
+				  count(id)
+				FROM 
+				  employees
+				""";
+		SqlParameterSource param = new MapSqlParameterSource();
+		return template.queryForObject(getMaxIdSql, param,Integer.class);
 	}
 }

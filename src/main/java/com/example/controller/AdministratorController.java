@@ -124,26 +124,23 @@ public class AdministratorController {
 		return "administrator/login";
 	}
 
-	// /**
-	//  * ログインします.
-	//  * 
-	//  * @param form 管理者情報用フォーム
-	//  * @return ログイン後の従業員一覧画面
-	//  */
-	// @PostMapping("/login")
-	// public String login(LoginForm form, RedirectAttributes redirectAttributes) {
-	// 	System.out.println(form);
-	// 	Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
-	// 	if (!passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
-	// 		System.out.println(administrator);
-	// 		redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-	// 		return "redirect:/login";
-	// 	}
-	// 	//ログインしているユーザーの情報をsessionに渡す
-	// 	System.out.println("ログイン成功");
-	// 	session.setAttribute("administratorName", administrator.getName());
-	// 	return "redirect:/employee/showList";
-	// }
+	/**
+	 * ログインします.
+	 * 
+	 * @param form 管理者情報用フォーム
+	 * @return ログイン後の従業員一覧画面
+	 */
+	@PostMapping("/login")
+	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
+		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
+		if (!passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
+			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
+			return "redirect:/login";
+		}
+		//ログインしているユーザーの情報をsessionに渡す
+		session.setAttribute("administratorName", administrator.getName());
+		return "redirect:/employees";
+	}
 
 	/////////////////////////////////////////////////////
 	// ユースケース：ログアウトをする
@@ -153,7 +150,7 @@ public class AdministratorController {
 	 * 
 	 * @return ログイン画面
 	 */
-	@GetMapping(value = "/logout")
+	@GetMapping("/logout")
 	public String logout() {
 		session.invalidate();
 		return "redirect:/login";
