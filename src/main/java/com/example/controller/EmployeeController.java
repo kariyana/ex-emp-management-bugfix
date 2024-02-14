@@ -16,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -145,7 +148,6 @@ public class EmployeeController {
 	@GetMapping("/insert")
 	public String showInsert(Model model
 							,InsertEmployeeForm form) {
-		System.out.println("form"+form);
 		return "/employee/insert";
 	}
 	/**
@@ -166,9 +168,14 @@ public class EmployeeController {
 		
 		// フォームに渡されたアップロードファイルを取得
 		MultipartFile multipartFile = form.getImage();
+
 		String fileName = "";
-		if (!multipartFile.isEmpty()) {
+		//fileが空でないなら、ファイルをアップロード
+		if (!multipartFile.isEmpty() && multipartFile.getContentType().substring(0,6).equals("image/")) {
 			fileName = uploadImageService.getUploadImageName(multipartFile);
+		}else{
+			model.addAttribute("errorUploadImage", "正しい画像ファイルを選択してください");
+			return showInsert(model,form);
 		}
 		if (fileName.equals("")) {
 			model.addAttribute("errorUploadImage", "正しい画像ファイルを選択してください");
@@ -189,8 +196,6 @@ public class EmployeeController {
 				e.printStackTrace();
 		}
 		employeeService.insert(employee);
-		System.out.println(employee);
-		System.out.println(form);
-		return "redirect:/employees/insert";
+		return "redirect:/employees";
 	}
 }
