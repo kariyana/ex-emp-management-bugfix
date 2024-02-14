@@ -94,7 +94,7 @@ public class EmployeeRepository {
 	 * @param limit
 	 * @return 全従業員一覧 従業員が存在しない場合はサイズ0件の従業員一覧を返します
 	 */
-	public List<Employee> findAllWithpaginate(SearchEmployeeForm form,int limit,int ofset) {
+	public List<Employee> findAllWithPaginate(SearchEmployeeForm form,int limit,int ofset) {
 
 		StringBuilder sqlBuilder = new StringBuilder();
 		sqlBuilder.append(" SELECT ");
@@ -233,6 +233,19 @@ public class EmployeeRepository {
 		String getMaxIdSql = """
 				SELECT
 				  max(id)
+				FROM 
+				  employees
+				""";
+		SqlParameterSource param = new MapSqlParameterSource();
+		return template.queryForObject(getMaxIdSql, param,Integer.class);
+	}
+	/**
+	 * 従業員の件数を取得する
+	 */
+	public int getNumberOfEmployees(){
+		String getMaxIdSql = """
+				SELECT
+				  count(id)
 				FROM 
 				  employees
 				""";

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +40,7 @@ import com.example.form.InsertEmployeeForm;
 import com.example.form.SearchEmployeeForm;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+import com.example.service.PaginateServie;
 import com.example.service.UploadImageService;
 
 import java.time.format.DateTimeFormatter;
@@ -60,6 +62,7 @@ public class EmployeeController {
 
 	private final EmployeeService employeeService;
 	private final UploadImageService uploadImageService;
+	private final PaginateServie paginateServie;
 
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
@@ -82,13 +85,28 @@ public class EmployeeController {
 	 */
 	@GetMapping({"","/"})
 	public String showList(Model model
-							,SearchEmployeeForm form) {
-		List<Employee> employeeList = employeeService.showList(form);
+						  ,SearchEmployeeForm form) {
+		int limit = 10;
+		int numberOfEmployees = employeeService.getNumberOfEmployees();
+		int numberOfPages = paginateServie.getNumberOfpages(numberOfEmployees, limit);
+		//現在のページの指定がない場合は、１ページに設定する
+		Integer page = form.getPage();
+		if (page==null || page==1) {
+			page =1;
+		}		
+		
+		int ofset = paginateServie.getOfset(page,limit);
+
+		Map<String,Integer> paginate = paginateServie.getPaginate(numberOfPages, page);
+		List<Employee> employeeList = employeeService.getEmployeeWithPaginate(form,limit,ofset);
+		
 		if (employeeList.isEmpty()) {
 			form.setName("");
-			employeeList = employeeService.showList(form);
+			employeeList = employeeService.getEmployeeWithPaginate(form,limit,0);
 			model.addAttribute("errorNotEmployee", "１件もありませんでした");
 		}
+		model.addAttribute("paginate", paginate);
+		model.addAttribute("curenntPage", page);
 		model.addAttribute("employeeList", employeeList);
 		return "employee/list";
 	}
