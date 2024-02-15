@@ -32,6 +32,7 @@ public class AdministratorService {
 	 * @param administrator 管理者情報
 	 */
 	public void insert(Administrator administrator) {
+		System.out.println(administrator);
 		administrator.setPassword(passwordEncoder.encode(administrator.getPassword()));
 		administratorRepository.insert(administrator);
 	}
@@ -58,7 +59,7 @@ public class AdministratorService {
 	 * @return 管理者情報 存在しない場合はnullが返ります
 	 */
 	public Optional<Administrator> findByMailAddress(String mailAddress){
-		Administrator administrator = administratorRepository.findByMailAddress(mailAddress);
-		return Optional.ofNullable(administrator);
+		return administratorRepository.findByMailAddress(mailAddress);
+	
 	}
 }

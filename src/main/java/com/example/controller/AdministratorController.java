@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.domain.Administrator;
@@ -22,6 +24,7 @@ import com.example.service.AdministratorService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 /**
  * 管理者情報を操作するコントローラー.
@@ -34,11 +37,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/")
 public class AdministratorController {
 
-	@Autowired
-	private AdministratorService administratorService;
+	private final AdministratorService administratorService;
 
-	@Autowired
-	private HttpSession session;
+	private final HttpSession session;
 
 	private final PasswordEncoder passwordEncoder;
 
@@ -85,6 +86,7 @@ public class AdministratorController {
 	public String insert(Model model,
 						@Validated InsertAdministratorForm form,
 						BindingResult result) {
+		System.out.println("post");
 		//バリデーション以外のエラーがあるかどうか
 		boolean isError = false;
 		//メールアドレスの重複を確認する。
@@ -123,6 +125,20 @@ public class AdministratorController {
 		System.out.println("ログイン画面");
 		return "administrator/login";
 	}
+	/**
+	 * ログインエラー画面を出力します.
+	 * 
+	 * @return ログイン画面
+	 */
+	@GetMapping(value = "/login",params = "error")
+	public String viewWithError(Model model,LoginForm form) {
+		System.out.println("エラー画面");
+		var errorInfo = (Exception)session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		if (errorInfo!=null) {
+		}
+		model.addAttribute("errorMessage", errorInfo.getMessage());
+		return "administrator/login";
+	}
 
 	/**
 	 * ログインします.
@@ -132,6 +148,7 @@ public class AdministratorController {
 	 */
 	@PostMapping("/login")
 	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
+		System.out.println("login");
 		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
 		if (!passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
