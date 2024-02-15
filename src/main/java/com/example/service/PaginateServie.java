@@ -66,7 +66,7 @@ public class PaginateServie {
             paginate = new HashMap<>();
             paginate.put("1",1);
         }
-        System.out.println(paginate);
+
         return paginate;
     }
 

@@ -26,56 +26,37 @@ public class WebSecurityConfig {
 		
 	private final CustomAuthenticationProvider customAuthenticationProvider;
 	private final PasswordEncoder passwordEncoder;
-	/**
-	 * パスワードをhash化
-	 * @return hashPassword
-	 */
-	// @Bean
-	// public PasswordEncoder passwordEncoder() {
-	// 	System.out.println("passwordEncoder");
-	// 	return new BCryptPasswordEncoder();
-	// }
 
+	/**
+	 * ログイン認証設定
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// System.out.println("securityChain");
-		http
-		 // カスタム認証プロバイダを設定
-		.authenticationProvider(customAuthenticationProvider)
-		.authorizeHttpRequests(authz -> authz
-			.requestMatchers(UrlConst.NO_AUTHENTICATION).permitAll()
-			.anyRequest().authenticated()
-		)
-		.formLogin(login -> login 
-        .loginPage("/login") 
-		.usernameParameter("mailAddress")
-        .loginProcessingUrl("/login") 
-        .defaultSuccessUrl("/employees")
+		// http
+		//  // カスタム認証プロバイダを設定
+		// .authenticationProvider(customAuthenticationProvider)
+		
+		// .authorizeHttpRequests(authz -> authz
+		// 	.requestMatchers(UrlConst.NO_AUTHENTICATION).permitAll()
+		// 	.anyRequest().authenticated()
 		// )
-        // // .logout(logout -> logout
-        // //     .permitAll()
-        )
-		;
+		// .formLogin(login -> login 
+		// // .loginProcessingUrl("/login")
+        // .loginPage("/login") 
+		// .usernameParameter("mailAddress")
+        // .defaultSuccessUrl("/employees")
+        // .failureUrl("/login?error") 
+        // .permitAll() 
+		// // )
+        // // // .logout(logout -> logout
+        // // //     .permitAll()
+        // )
+		// ;
 
 	return http.build();
 	}
 	
-	@Bean
-	UserDetailsService userDetailsManager(){
-		System.out.println("UserDetailService");
-		UserDetails admin = User.builder()
-								.username("test@gmail.com")
-								.password(passwordEncoder.encode("testtest"))
-								.authorities("ADMIN")
-								.build();
-			
-		UserDetails user = User.builder()
-								.username("test@hash.com")
-								.password(passwordEncoder.encode("testtest"))
-								.authorities("USER")
-								.build();
-		return new InMemoryUserDetailsManager(admin,user);
-			
-	}
-
 }

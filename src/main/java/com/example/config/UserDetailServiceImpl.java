@@ -1,5 +1,7 @@
 package com.example.config;
 
+import java.util.Optional;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.User;
@@ -29,10 +31,8 @@ public class UserDetailServiceImpl implements UserDetailsService{
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        System.out.println("loadUserByUsername");
-        Administrator userInfo = administratorRepository.findByMailAddress(username)
+        Administrator userInfo = Optional.ofNullable(administratorRepository.findByMailAddress(username))
                         .orElseThrow(()->new UsernameNotFoundException(username));
-
         return User.withUsername(userInfo.getMailAddress())
                 .password(userInfo.getPassword())
                 .roles("USER")

@@ -22,14 +22,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
         String username = authentication.getName();
         String inputPassword = (String) authentication.getCredentials();
-
+    
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if (passwordEncoder.matches(inputPassword, userDetails.getPassword())) {
+            System.out.println("認証OK");
             return new UsernamePasswordAuthenticationToken(username, inputPassword, userDetails.getAuthorities());
         } else {
+            System.out.println("認証失敗");
             throw new BadCredentialsException("Authentication failed");
         }
     }

@@ -24,7 +24,7 @@ import com.example.service.AdministratorService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
+
 
 /**
  * 管理者情報を操作するコントローラー.
@@ -86,7 +86,6 @@ public class AdministratorController {
 	public String insert(Model model,
 						@Validated InsertAdministratorForm form,
 						BindingResult result) {
-		System.out.println("post");
 		//バリデーション以外のエラーがあるかどうか
 		boolean isError = false;
 		//メールアドレスの重複を確認する。
@@ -100,7 +99,6 @@ public class AdministratorController {
 			model.addAttribute("errorMessageNotMatchPassword", "パスワードと確認用パスワードが一致しません");
 			isError = true;
 		}
-
 		//バリデーションエラーを確認する。
 		if (result.hasErrors() || isError) {
 			return toInsert(form);
@@ -122,7 +120,6 @@ public class AdministratorController {
 	 */
 	@GetMapping("/login")
 	public String toLogin() {
-		System.out.println("ログイン画面");
 		return "administrator/login";
 	}
 	/**
@@ -132,7 +129,6 @@ public class AdministratorController {
 	 */
 	@GetMapping(value = "/login",params = "error")
 	public String viewWithError(Model model,LoginForm form) {
-		System.out.println("エラー画面");
 		var errorInfo = (Exception)session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 		if (errorInfo!=null) {
 		}

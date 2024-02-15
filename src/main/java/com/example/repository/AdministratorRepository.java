@@ -99,7 +99,6 @@ public class AdministratorRepository {
 	 * @param administrator 管理者情報
 	 */
 	public void insert(Administrator administrator) {
-		System.out.println("repository");
 		SqlParameterSource param = new BeanPropertySqlParameterSource(administrator);
 		String sql = "insert into administrators(name,mail_address,password)values(:name,:mailAddress,:password);";
 		template.update(sql, param);
@@ -111,10 +110,15 @@ public class AdministratorRepository {
 	 * @param mailAddress メールアドレス
 	 * @return 管理者情報 存在しない場合はnullを返します
 	 */
-	public Optional<Administrator> findByMailAddress(String mailAddress) {
+	public Administrator findByMailAddress(String mailAddress) {
+	
 		String sql = "select id,name,mail_address,password from administrators where mail_address=:mailAddress";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
-		return Optional.ofNullable(template.queryForObject(sql, param, ADMINISTRATOR_ROW_MAPPER));			
+		try {
+			return template.queryForObject(sql, param, ADMINISTRATOR_ROW_MAPPER);			
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
