@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
 		
 	private final CustomAuthenticationProvider customAuthenticationProvider;
-	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * ログイン認証設定
@@ -35,26 +34,26 @@ public class WebSecurityConfig {
 	 */
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// http
-		//  // カスタム認証プロバイダを設定
-		// .authenticationProvider(customAuthenticationProvider)
+		http
+		 // カスタム認証プロバイダを設定
+		.authenticationProvider(customAuthenticationProvider)
 		
-		// .authorizeHttpRequests(authz -> authz
-		// 	.requestMatchers(UrlConst.NO_AUTHENTICATION).permitAll()
-		// 	.anyRequest().authenticated()
+		.authorizeHttpRequests(authz -> authz
+			.requestMatchers(UrlConst.NO_AUTHENTICATION).permitAll()
+			.anyRequest().authenticated()
+		)
+		.formLogin(login -> login 
+		// .loginProcessingUrl("/login")
+        .loginPage("/login") 
+		.usernameParameter("mailAddress")
+        .defaultSuccessUrl("/employees")
+        .failureUrl("/login?error") 
+        .permitAll() 
 		// )
-		// .formLogin(login -> login 
-		// // .loginProcessingUrl("/login")
-        // .loginPage("/login") 
-		// .usernameParameter("mailAddress")
-        // .defaultSuccessUrl("/employees")
-        // .failureUrl("/login?error") 
-        // .permitAll() 
-		// // )
-        // // // .logout(logout -> logout
-        // // //     .permitAll()
-        // )
-		// ;
+        // // .logout(logout -> logout
+        // //     .permitAll()
+        )
+		;
 
 	return http.build();
 	}

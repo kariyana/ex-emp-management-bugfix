@@ -21,6 +21,7 @@ import com.example.domain.Administrator;
 import com.example.form.InsertAdministratorForm;
 import com.example.form.LoginForm;
 import com.example.service.AdministratorService;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -119,7 +120,7 @@ public class AdministratorController {
 	 * @return ログイン画面
 	 */
 	@GetMapping("/login")
-	public String toLogin() {
+	public String toLogin(LoginForm form) {
 		return "administrator/login";
 	}
 	/**
@@ -143,12 +144,16 @@ public class AdministratorController {
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@PostMapping("/login")
-	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
+	public String login(@Validated LoginForm form, BindingResult result,RedirectAttributes redirectAttributes,Model model) {
 		System.out.println("login");
+		if (result.hasErrors()) {
+			return toLogin(form);
+		}
 		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
-		if (!passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
-			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
-			return "redirect:/login";
+	
+		if (administrator == null || !passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
+			model.addAttribute("errorMessage","メールアドレスまたはパスワードが不正です。");
+			return toLogin(form);
 		}
 		//ログインしているユーザーの情報をsessionに渡す
 		session.setAttribute("administratorName", administrator.getName());

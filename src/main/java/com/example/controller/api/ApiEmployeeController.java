@@ -33,8 +33,6 @@ public class ApiEmployeeController {
     public ResponseEntity<List<Employee>> getNameAutoComplete(SearchEmployeeForm form){
         Employee employee = new Employee();
         BeanUtils.copyProperties(form, employee);
-        System.out.println(form);
-        System.out.println(form.getLimit());
         Integer limit = form.getLimit();
         if (limit == null) {
             limit = 10;
