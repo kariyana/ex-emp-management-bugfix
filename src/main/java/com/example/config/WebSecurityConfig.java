@@ -34,6 +34,7 @@ public class WebSecurityConfig {
 	 */
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		System.out.println("configStrat");
 		http
 		 // カスタム認証プロバイダを設定
 		.authenticationProvider(customAuthenticationProvider)
@@ -49,12 +50,14 @@ public class WebSecurityConfig {
         .defaultSuccessUrl("/employees")
         .failureUrl("/login?error") 
         .permitAll() 
-		// )
-        // // .logout(logout -> logout
-        // //     .permitAll()
+		)
+		.logout(logout -> logout
+           // ログアウト処理のURLを指定
+           .logoutUrl("/logout")
+           // ログアウト成功時のリダイレクト先URLを指定
+           .logoutSuccessUrl("/login")
         )
 		;
-
 	return http.build();
 	}
 	

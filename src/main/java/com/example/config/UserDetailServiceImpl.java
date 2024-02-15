@@ -31,6 +31,7 @@ public class UserDetailServiceImpl implements UserDetailsService{
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        System.out.println("UserDetail load");
         Administrator userInfo = Optional.ofNullable(administratorRepository.findByMailAddress(username))
                         .orElseThrow(()->new UsernameNotFoundException(username));
         return User.withUsername(userInfo.getMailAddress())

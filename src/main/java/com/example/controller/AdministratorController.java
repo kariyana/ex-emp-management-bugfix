@@ -73,7 +73,7 @@ public class AdministratorController {
 	 * @return 管理者登録画面
 	 */
 	@GetMapping("/toInsert")
-	public String toInsert(InsertAdministratorForm form) {
+	public String toInsert() {
 		return "administrator/insert";
 	}
 
@@ -102,7 +102,7 @@ public class AdministratorController {
 		}
 		//バリデーションエラーを確認する。
 		if (result.hasErrors() || isError) {
-			return toInsert(form);
+			return toInsert();
 		}
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
@@ -120,7 +120,7 @@ public class AdministratorController {
 	 * @return ログイン画面
 	 */
 	@GetMapping("/login")
-	public String toLogin(LoginForm form) {
+	public String toLogin() {
 		return "administrator/login";
 	}
 	/**
@@ -129,7 +129,7 @@ public class AdministratorController {
 	 * @return ログイン画面
 	 */
 	@GetMapping(value = "/login",params = "error")
-	public String viewWithError(Model model,LoginForm form) {
+	public String viewWithError(Model model) {
 		var errorInfo = (Exception)session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 		if (errorInfo!=null) {
 		}
@@ -147,13 +147,13 @@ public class AdministratorController {
 	public String login(@Validated LoginForm form, BindingResult result,RedirectAttributes redirectAttributes,Model model) {
 		System.out.println("login");
 		if (result.hasErrors()) {
-			return toLogin(form);
+			return toLogin();
 		}
 		Administrator administrator = administratorService.findByMailAddress(form.getMailAddress()).orElse(null);
 	
 		if (administrator == null || !passwordEncoder.matches(form.getPassword(), administrator.getPassword())) {
 			model.addAttribute("errorMessage","メールアドレスまたはパスワードが不正です。");
-			return toLogin(form);
+			return toLogin();
 		}
 		//ログインしているユーザーの情報をsessionに渡す
 		session.setAttribute("administratorName", administrator.getName());
@@ -170,6 +170,7 @@ public class AdministratorController {
 	 */
 	@GetMapping("/logout")
 	public String logout() {
+		System.out.println("logout");
 		session.invalidate();
 		return "redirect:/login";
 	}

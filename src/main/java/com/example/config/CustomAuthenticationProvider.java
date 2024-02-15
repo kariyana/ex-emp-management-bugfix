@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -19,7 +20,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
-
+   
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -33,12 +34,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(username, inputPassword, userDetails.getAuthorities());
         } else {
             System.out.println("認証失敗");
-            throw new BadCredentialsException("Authentication failed");
+            throw new BadCredentialsException("メールアドレスまたは、パスワードが不正です");
         }
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
+        System.out.println("support");
         // authentication(認証方式)がUsernamePasswordAuthenticationToken.class(ユーザー名とパスワード認証)か判定
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
